@@ -52,6 +52,7 @@ public class ListSorter<T> {
 		list.clear();
 		list.addAll(sorted);
 	}
+	
 
 	/**
 	 * Sorts a list using a Comparator object.
@@ -63,8 +64,47 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		if (list.size() == 1) return list; 
+		
+        List<T> left = list.subList(0,list.size()/2); 
+        List<T> right = list.subList(list.size()/2, list.size()); 
+        
+        left = mergeSort(left, comparator); 
+        right = mergeSort(right, comparator); 
+        
+        List<T> sortedList = merge(left, right, comparator); 
+        return sortedList;
+	}
+	
+	private List<T> merge(List<T> left, List<T> right, Comparator<T> comparator){
+		List<T> mergedList = new LinkedList<T>(); 
+		
+		int leftIndex = 0, rightIndex = 0;
+		
+		while (leftIndex < left.size() && rightIndex < right.size()){
+			T leftElement = left.get(leftIndex); 
+			T rightElement = right.get(rightIndex); 
+			
+			if (comparator.compare(leftElement, rightElement) <= 0){
+				mergedList.add(leftElement); 
+				leftIndex++; 
+			} else {
+				mergedList.add(rightElement); 
+				rightIndex++; 
+			}
+		}
+		
+		while (leftIndex < left.size()){
+			mergedList.add(left.get(leftIndex)); 
+			leftIndex++; 
+		}
+		
+		while (rightIndex < right.size()){
+			mergedList.add(right.get(rightIndex)); 
+			rightIndex++; 
+		}
+		
+		return mergedList; 
 	}
 
 	/**
@@ -75,7 +115,15 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
+        PriorityQueue<T> heap = new PriorityQueue<T>(list.size(), comparator); 
+        
+        heap.addAll(list); 
+        
+        list.clear();  
+        
+        while (!heap.isEmpty()){
+        	list.add(heap.poll()); 
+        }
 	}
 
 	
@@ -89,8 +137,19 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		if (k > list.size()){
+			return null; 
+		}
+		
+        List<T> temp = new LinkedList<T>(list);
+        heapSort(temp, comparator);
+        
+        LinkedList<T> topK = new LinkedList<T>(); 
+        for (int i = temp.size()-1; i >= temp.size()-k; i--){
+        	topK.addFirst(temp.get(i)); 
+        }
+        
+        return topK;
 	}
 
 	
